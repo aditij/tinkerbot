@@ -4,5 +4,22 @@
       "path": "/api/cron/nightly",
       "schedule": "0 0 * * *"
     }
+  ],
+  "ratelimits": [
+    {
+      "path": "/api/agent/research",
+      "window": "1d",
+      "limit": 5
+    },
+    {
+      "path": "/api/chat",
+      "window": "1d",
+      "limit": 30
+    },
+    {
+      "path": "/api/random-idea",
+      "window": "1d",
+      "limit": 20
+    }
   ]
 }
