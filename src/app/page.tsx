@@ -11,6 +11,21 @@ const STATUS_COLORS: Record<string, string> = {
   building: 'bg-blue-100 text-blue-700',
 }
 
+// ─── Copy Link Button ───────────────────────────────────────────
+function CopyLinkButton({ id }: { id: string }) {
+  const [copied, setCopied] = useState(false)
+  function copy() {
+    navigator.clipboard.writeText(`${window.location.origin}/idea/${id}`)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+  return (
+    <button onClick={copy} className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
+      {copied ? '✓ Copied!' : '🔗 Copy link'}
+    </button>
+  )
+}
+
 // ─── Detail View ────────────────────────────────────────────────
 function DetailView({
   idea, ideas, onSelect, onBack, runNow, runningId, deleteIdea, markBuilding,
@@ -120,15 +135,18 @@ function DetailView({
             </div>
 
             {/* Tags */}
-            <div className="flex gap-2 mb-4 flex-wrap">
-              <span className={`text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wide ${STATUS_COLORS[idea.status]}`}>
-                {idea.status}
-              </span>
-              {idea.verdict && (
-                <span className={`text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wide ${idea.verdict.decision === 'build' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600'}`}>
-                  {idea.verdict.decision}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex gap-2 flex-wrap">
+                <span className={`text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wide ${STATUS_COLORS[idea.status]}`}>
+                  {idea.status}
                 </span>
-              )}
+                {idea.verdict && (
+                  <span className={`text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wide ${idea.verdict.decision === 'build' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600'}`}>
+                    {idea.verdict.decision}
+                  </span>
+                )}
+              </div>
+              <CopyLinkButton id={idea.id} />
             </div>
 
             {/* Title */}
@@ -187,8 +205,8 @@ function DetailView({
                 <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">MVP Spec</h3>
                 <div className="grid grid-cols-2 gap-3">
                   {[
-                    { label: 'Stack', items: idea.mvp_spec.stack },
                     { label: 'Core Features', items: idea.mvp_spec.core_features },
+                    { label: 'Stack', items: idea.mvp_spec.stack },
                   ].map(({ label, items }) => (
                     <div key={label} className="bg-white border border-gray-200 rounded-xl p-4">
                       <p className="text-xs text-gray-400 font-semibold mb-2">{label}</p>
